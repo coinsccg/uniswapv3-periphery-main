@@ -43,10 +43,10 @@ contract NonfungiblePositionManager is
         int24 tickUpper;
         // 当前postion的流动性
         uint128 liquidity;
-        // 截至对单个postion的最后一次操作时，position的总费用
+        // 最新范围内部手续费
         uint256 feeGrowthInside0LastX128;
         uint256 feeGrowthInside1LastX128;
-        // 截至最后一次计算，该postion欠的token数量
+        // 最新范围内所欠的token数量
         uint128 tokensOwed0;
         uint128 tokensOwed1;
     }
