@@ -96,7 +96,7 @@ contract SwapRouter is
 
         (address tokenIn, address tokenOut, uint24 fee) = data.path.decodeFirstPool();
 
-        bool zeroForOne = tokenIn < tokenOut;
+        bool zeroForOne = tokenIn < tokenOut; // token0换token1 pool中都是以token0计价token1 price = token0Amount / token1Amount
 
         (int256 amount0, int256 amount1) =
             getPool(tokenIn, tokenOut, fee).swap(
