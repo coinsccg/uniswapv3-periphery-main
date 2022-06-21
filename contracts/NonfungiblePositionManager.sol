@@ -76,7 +76,7 @@ contract NonfungiblePositionManager is
         _tokenDescriptor = _tokenDescriptor_;
     }
 
-    /// @inheritdoc INonfungiblePositionManager
+    // 查询position数据
     function positions(uint256 tokenId)
         external
         view
@@ -115,7 +115,7 @@ contract NonfungiblePositionManager is
         );
     }
 
-    /// @dev Caches a pool key
+    // 缓存pool key
     function cachePoolKey(address pool, PoolAddress.PoolKey memory poolKey) private returns (uint80 poolId) {
         poolId = _poolIds[pool];
         if (poolId == 0) {
@@ -184,20 +184,22 @@ contract NonfungiblePositionManager is
         emit IncreaseLiquidity(tokenId, liquidity, amount0, amount1);
     }
 
+    // 鉴权
     modifier isAuthorizedForToken(uint256 tokenId) {
         require(_isApprovedOrOwner(msg.sender, tokenId), 'Not approved');
         _;
     }
 
+    // 查询nft url
     function tokenURI(uint256 tokenId) public view override(ERC721, IERC721Metadata) returns (string memory) {
         require(_exists(tokenId));
         return INonfungibleTokenPositionDescriptor(_tokenDescriptor).tokenURI(this, tokenId);
     }
 
-    // save bytecode by removing implementation of unused method
+    // 查询 NFT base url
     function baseURI() public pure override returns (string memory) {}
 
-    /// @inheritdoc INonfungiblePositionManager
+    // 增加流动性
     function increaseLiquidity(IncreaseLiquidityParams calldata params)
         external
         payable
@@ -307,7 +309,7 @@ contract NonfungiblePositionManager is
 
         position.feeGrowthInside0LastX128 = feeGrowthInside0LastX128;
         position.feeGrowthInside1LastX128 = feeGrowthInside1LastX128;
-        // subtraction is safe because we checked positionLiquidity is gte params.liquidity
+        // 更新流动性
         position.liquidity = positionLiquidity - params.liquidity;
 
         emit DecreaseLiquidity(params.tokenId, params.liquidity, amount0, amount1);
@@ -381,7 +383,7 @@ contract NonfungiblePositionManager is
         emit Collect(params.tokenId, recipient, amount0Collect, amount1Collect);
     }
 
-    /// @inheritdoc INonfungiblePositionManager
+    /// 销毁流动性
     function burn(uint256 tokenId) external payable override isAuthorizedForToken(tokenId) {
         Position storage position = _positions[tokenId];
         require(position.liquidity == 0 && position.tokensOwed0 == 0 && position.tokensOwed1 == 0, 'Not cleared');
