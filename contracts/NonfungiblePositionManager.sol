@@ -46,7 +46,7 @@ contract NonfungiblePositionManager is
         // 最新范围内部手续费
         uint256 feeGrowthInside0LastX128;
         uint256 feeGrowthInside1LastX128;
-        // 最新范围内所欠的token数量
+        // 最新范围内所欠的token数量（用户收益）
         uint128 tokensOwed0;
         uint128 tokensOwed1;
     }
@@ -342,6 +342,7 @@ contract NonfungiblePositionManager is
             (, uint256 feeGrowthInside0LastX128, uint256 feeGrowthInside1LastX128, , ) =
                 pool.positions(PositionKey.compute(address(this), position.tickLower, position.tickUpper));
 
+            // 计算最新的token0收益
             tokensOwed0 += uint128(
                 FullMath.mulDiv(
                     feeGrowthInside0LastX128 - position.feeGrowthInside0LastX128,
@@ -349,6 +350,7 @@ contract NonfungiblePositionManager is
                     FixedPoint128.Q128
                 )
             );
+            // 计算最新的token1收益
             tokensOwed1 += uint128(
                 FullMath.mulDiv(
                     feeGrowthInside1LastX128 - position.feeGrowthInside1LastX128,
